@@ -1,0 +1,26 @@
+
+ambesedor data for week 
+
+SELECT C.Type AS C_Type, City.City, Quarter.Quarter, TT.Description, TJ.PrimaryCurrency, COUNT(TJ.Amount), SUM(TJ.Amount) 
+FROM Transactions TJ 
+	JOIN Customer C ON TJ.ReferenceId = C.CustomerID 
+	JOIN City ON City.CityID = C.CityID 
+	JOIN Quarter ON Quarter.QuarterID = C.QuarterID 
+	JOIN TransactionTypes TT on TT.TransactionType = TJ.TransactionType 
+WHERE TJ.TransactionType NOT IN (10, 20, 30, 31, 35, 60, 84, 98, 120, 121, 135) 
+	AND TJ.Status IN(2000, 10) 
+	AND DATE_FORMAT(DATE(TJ.TransactionDate), '%Y%m%d') BETWEEN 20200101 AND 20200526 
+    AND C.Type IN (0,2)
+GROUP BY C_Type, City.City, Quarter.Quarter, TT.Description, TJ.PrimaryCurrency
+UNION
+SELECT CASE WHEN C.CustomerCategory=4 THEN '4' ELSE '5' END C_Type, City.City, Quarter.Quarter, TT.Description, TJ.PrimaryCurrency, COUNT(TJ.Amount), SUM(TJ.Amount) 
+FROM Transactions TJ 
+	JOIN Customer C ON TJ.ReferenceId = C.CustomerID 
+	JOIN City ON City.CityID = C.CityID 
+	JOIN Quarter ON Quarter.QuarterID = C.QuarterID 
+	JOIN TransactionTypes TT on TT.TransactionType = TJ.TransactionType 
+WHERE TJ.TransactionType NOT IN (10, 20, 30, 31, 35, 60, 84, 98, 120, 121, 135) 
+	AND TJ.Status IN(2000, 10) 
+	AND DATE_FORMAT(DATE(TJ.TransactionDate), '%Y%m%d') BETWEEN 20200101 AND 20200526 
+    AND C.Type IN (1)
+GROUP BY C_Type, City.City, Quarter.Quarter, TT.Description, TJ.PrimaryCurrency
